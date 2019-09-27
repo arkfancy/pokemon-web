@@ -27,6 +27,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+	
 	if (to.meta == null || to.meta.login == null || !to.meta.login) {
 		// 不需要验证登录
 		next();

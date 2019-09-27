@@ -2,7 +2,7 @@
 	<div id="pokemonIndex">
 		<el-row>
 			<el-col>
-				<h2>Arthurの笔记 —— 超级精灵球</h2>
+				<h2>Arthur <i class="el-icon-bangzhu" /> 超级精灵球</h2>
 			</el-col>
 			<el-col>
 				<div align="right">
