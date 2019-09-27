@@ -38,10 +38,10 @@ router.beforeEach((to, from, next) => {
 		next();
 		return;
 	}
-	
+
 	// 校验登录
 	let url = "http://www.arkfancy.com/api/sso/info";
-	let returnUrl=window.location.host+window.location.pathname+"#"+to.fullPath;
+	let returnUrl = window.location.origin + window.location.pathname + "#" + to.fullPath;
 	Axios.get(url, {
 		params: {
 			returnUrl: returnUrl
@@ -52,16 +52,15 @@ router.beforeEach((to, from, next) => {
 			sessionStorage.setItem("arkfancy-sso", res.data.data);
 			next();
 		}
-	})
-	/* .catch(function(error) {
-			if (401 === error.response.status) {
-				let loginUrl = error.response.data;
-				window.location = loginUrl;
-			} else {
-				return Promise.reject(error);
-			}
-		}) */
-	;
+	}).catch(function(error) {
+
+		if (401 === error.response.status) {
+			let loginUrl = error.response.data;
+			window.location = loginUrl;
+		} else {
+			return Promise.reject(error);
+		}
+	});
 });
 
 export default router;
