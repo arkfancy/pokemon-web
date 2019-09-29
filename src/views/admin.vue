@@ -3,7 +3,7 @@
 		<el-tabs v-model="activeTabs">
 			<el-tab-pane label="贡献" name="contribution">
 				<el-container>
-					<el-aside width="200px">
+					<el-aside width="200">
 						<el-menu :default-active="contributionMenuActive" class="el-menu-vertical" :collapse="menuCollapse" @select="contributionMenuSelect"
 						 ref="contributionMenu">
 							<el-menu-item index="collapse">
@@ -29,10 +29,10 @@
 									</el-table-column>
 									<el-table-column prop="memberName" label="成员" align="center">
 									</el-table-column>
-									<el-table-column prop="contribution" label="本轮贡献">
-										<template slot="header" slot-scope="scope">
-											<el-date-picker size="mini" v-model="contributionDate" @change="contributionRecordDateChange" type="date"
-											 placeholder="选择日期" value-format="yyyy-MM-dd">
+									<el-table-column prop="contribution" label="本轮贡献" ref="a">
+										<template slot="header" slot-scope="scope" ref="b">
+											<el-date-picker ref="c" style="line-height: 0px;padding: 0px" size="mini" v-model="contributionDate" @change="contributionRecordDateChange"
+											 type="date" placeholder="选择日期" value-format="yyyy-MM-dd">
 											</el-date-picker>
 										</template>
 										<template slot-scope="scope">
@@ -63,7 +63,7 @@
 		data() {
 			return {
 				activeTabs: "contribution",
-				menuCollapse: true,
+				menuCollapse: false,
 
 				contributionMenuActive: "add",
 				contributionDate: "",
