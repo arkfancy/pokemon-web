@@ -52,19 +52,55 @@
 					</el-col>
 				</el-col>
 				<el-col :xs="24" :sm="14" :md="14" :lg="16">
-					<el-col>
-						<h3>分配详细记录</h3>
+					<el-col :span="24">
+						<el-col>
+							<h3>分配计算</h3>
+						</el-col>
+						<el-col>
+							<el-form :inline="true" :model="distributionCalculateForm" size="mini" align="left">
+							  <el-form-item label="审批人">
+								<el-input v-model="distributionCalculateForm.user" placeholder="审批人"></el-input>
+							  </el-form-item>
+							  <el-form-item label="活动区域">
+								<el-select v-model="distributionCalculateForm.region" placeholder="活动区域">
+								  <el-option label="区域一" value="shanghai"></el-option>
+								  <el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							  </el-form-item>
+							  <el-form-item>
+								<el-button @click="onSubmit">计算</el-button>
+							  </el-form-item>
+							</el-form>
+								<!-- <el-col>
+									计算公式：<el-select size="mini"></el-select>
+								</el-col>
+								本轮日期：<el-select size="mini"></el-select>
+								上轮日期：<el-select size="mini"></el-select> -->
+						</el-col>
+						<el-col :span="22" :ofset="1">
+							<el-table :data="distributionData">
+								<el-table-column label="成员" prop="memberName" />
+								<el-table-column label="计算后贡献值" prop="itemName" />
+								<el-table-column label="所占比率" prop="quantity" />
+								<el-table-column label="可分得数量" prop="quantity" />
+							</el-table>
+						</el-col>
 					</el-col>
-					<el-col :span="22" :ofset="1">
-						<el-table :data="distributionData">
-							<el-table-column label="分配日期" prop="recordDate" />
-							<el-table-column label="成员" prop="memberName" />
-							<el-table-column label="分配物品" prop="itemName" />
-							<el-table-column label="数量" prop="quantity" />
-						</el-table>
-						<el-pagination layout="sizes, prev, pager, next" :total="distributionPageTotal" :page-size="distributionPageSize"
-						:current-page="distributionPageCurrent" @size-change="distributionSizeChange" @current-change="distributionCurrentChange">
-						</el-pagination>
+					<el-col :span="24">
+						<el-col>
+							<h3>分配详细记录</h3>
+						</el-col>
+						<el-col :span="22" :ofset="1">
+							<el-table :data="distributionData">
+								<el-table-column label="分配日期" prop="recordDate" />
+								<el-table-column label="成员" prop="memberName" />
+								<el-table-column label="分配物品" prop="itemName" />
+								<el-table-column label="数量" prop="quantity" />
+							</el-table>
+							<el-pagination layout="sizes, prev, pager, next" :total="distributionPageTotal" :page-size="distributionPageSize"
+							:current-page="distributionPageCurrent" @size-change="distributionSizeChange" @current-change="distributionCurrentChange">
+							</el-pagination>
+						</el-col>
 					</el-col>
 				</el-col>
 			</el-tab-pane>
@@ -112,6 +148,9 @@
 				distributionPageCurrent: 1,
 				itemData: [],
 				itemId: "",
+				distributionCalculateForm: {
+					
+				},
 
 				memberData: [],
 				memberSumData: [],
