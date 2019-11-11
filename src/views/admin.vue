@@ -5,7 +5,7 @@
 				<el-container>
 					<el-aside width="200">
 						<el-menu :default-active="contributionMenuActive" class="el-menu-vertical" :collapse="menuCollapse" @select="contributionMenuSelect"
-						 ref="contributionMenu">
+						ref="contributionMenu">
 							<el-menu-item index="collapse">
 								<i class="el-icon-arrow-left" v-show="!menuCollapse" />
 								<i class="el-icon-arrow-right" v-show="menuCollapse" />
@@ -30,7 +30,7 @@
 									<el-table-column>
 										<template slot="header" slot-scope="scope">{{scope.row}}
 											<el-date-picker style="line-height: 0px;padding: 0px" size="mini" v-model="contributionDate" @change="contributionRecordDateChange"
-											 type="date" placeholder="选择日期" value-format="yyyy-MM-dd" />
+											type="date" placeholder="选择日期" value-format="yyyy-MM-dd" />
 										</template>
 										<template slot-scope="scope">
 											<el-input size="mini" type="number" placeholder="本轮贡献值" v-model="scope.row.contribution" clearable />
@@ -50,7 +50,7 @@
 				<el-container>
 					<el-aside width="200">
 						<el-menu :default-active="distributionMenuActive" class="el-menu-vertical" :collapse="menuCollapse" @select="distributionMenuSelect"
-						 ref="distributionMenu">
+						ref="distributionMenu">
 							<el-menu-item index="collapse">
 								<i class="el-icon-arrow-left" v-show="!menuCollapse" />
 								<i class="el-icon-arrow-right" v-show="menuCollapse" />
@@ -77,7 +77,7 @@
 												{{scope.row}}
 												<el-col>
 													<el-date-picker v-model="distributionDate" @change="distributionRecordDateChange" type="date" placeholder="选择日期"
-													 value-format="yyyy-MM-dd" size="mini" />
+													value-format="yyyy-MM-dd" size="mini" />
 												</el-col>
 												<el-col>
 													<el-select v-model="itemId" placeholder="选择道具" size="mini" @change="distributionItemIdChange" filterable>
@@ -217,8 +217,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(res => {
-					submit()
-				}).catch(res => {});
+					if (res) {
+						submit()
+					}
+				}).catch(res => {
+					alert(res)
+				});
 			},
 			submitContribution() {
 				if (this.contributionDate == null) {

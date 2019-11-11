@@ -35,7 +35,19 @@
 								</template>
 							</el-table-column>
 							<el-table-column label="成员" prop="memberName" />
-							<el-table-column label="分配总量" prop="sum" />
+							<!-- <el-table-column label="分配数量" prop="sum" /> -->
+							<el-table-column prop="sum">
+								<template slot="header" slot-scope="scope">
+									<div id="distribution-header-template">
+										{{scope.row}}
+										<el-col>
+											<el-select v-model="itemId" placeholder="选择道具" size="mini" @change="distributionItemIdChange" filterable clearable>
+												<el-option v-for="item in itemData" :key="item.itemId" :label="item.itemName" :value="item.itemId" />
+											</el-select>
+										</el-col>
+									</div>
+								</template>
+							</el-table-column>
 						</el-table>
 					</el-col>
 				</el-col>
@@ -98,6 +110,8 @@
 				distributionPageTotal: 0,
 				distributionPageSize: 10,
 				distributionPageCurrent: 1,
+				itemData: [],
+				itemId: "",
 
 				memberData: [],
 				memberSumData: [],
@@ -120,6 +134,7 @@
 			this.getDistribution();
 			this.getDistributionSum();
 			this.getMember();
+			this.getItem();
 		},
 		methods: {
 			getContribution() {
@@ -147,7 +162,11 @@
 			},
 			getDistributionSum() {
 				this.$axios
-					.get("/pokemon/warehouse-distribution/sum")
+					.get("/pokemon/warehouse-distribution/sum",{
+						params: {
+							itemId: this.itemId
+						}
+					})
 					.then(res => {
 						this.distributionSumData = res.data.data;
 					})
@@ -172,6 +191,16 @@
 						alert("error: " + error);
 					});
 			},
+			getItem() {
+				this.$axios
+					.get("/pokemon/item/list")
+					.then(res => {
+						this.itemData = res.data.data;
+					})
+					.catch(function(error) {
+						alert("error: " + error);
+					});
+			},
 			distributionCurrentChange(val) {
 				this.distributionPageCurrent = val;
 				this.getDistribution();
@@ -180,6 +209,9 @@
 				this.distributionPageSize = val;
 				this.distributionPageCurrent = 1;
 				this.getDistribution();
+			},
+			distributionItemIdChange(val) {
+				this.getDistributionSum();
 			},
 			memberCurrentChange(val) {
 				this.memberPageCurrent = val;
@@ -202,4 +234,29 @@
 		position: relative;
 		left: 10px;
 	}
+	
+	#distribution-header-template {
+		line-height: 0px;
+		padding: 0;
+	}
+
+	#distribution-header-template .el-col {
+		line-height: 0px;
+		padding: 0;
+	}
+
+	#distribution-header-template .el-date-editor {
+		width: auto;
+		padding: 0;
+	}
+
+	#distribution-header-template .el-select {
+		width: auto;
+		padding: 0;
+	}
+
+	#distribution-header-template .el-input {
+		padding: 0;
+	}
+	
 </style>
