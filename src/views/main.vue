@@ -41,7 +41,8 @@
 									<div id="distribution-header-template">
 										{{scope.row}}
 										<el-col>
-											<el-select v-model="itemId" placeholder="选择道具" size="mini" @change="distributionItemIdChange" filterable clearable>
+											<el-select v-model="itemId" placeholder="选择道具" size="mini" @change="distributionItemIdChange" filterable
+											 clearable>
 												<el-option v-for="item in itemData" :key="item.itemId" :label="item.itemName" :value="item.itemId" />
 											</el-select>
 										</el-col>
@@ -58,20 +59,29 @@
 						</el-col>
 						<el-col>
 							<el-form :inline="true" :model="distributionCalculateForm" size="mini" align="left">
-							  <el-form-item label="审批人">
-								<el-input v-model="distributionCalculateForm.user" placeholder="审批人"></el-input>
-							  </el-form-item>
-							  <el-form-item label="活动区域">
-								<el-select v-model="distributionCalculateForm.region" placeholder="活动区域">
-								  <el-option label="区域一" value="shanghai"></el-option>
-								  <el-option label="区域二" value="beijing"></el-option>
-								</el-select>
-							  </el-form-item>
-							  <el-form-item>
-								<el-button @click="onSubmit">计算</el-button>
-							  </el-form-item>
+								<el-form-item label="计算方式">
+									<el-input v-model="distributionCalculateForm.strategy" placeholder="计算方式"></el-input>
+								</el-form-item>
+								<el-form-item label="本轮日期">
+									<el-select v-model="distributionCalculateForm.region" placeholder="本轮日期">
+										<el-option label="区域一" value="shanghai"></el-option>
+										<el-option label="区域二" value="beijing"></el-option>
+									</el-select>
+								</el-form-item>
+								<el-form-item label="上轮日期">
+									<el-select v-model="distributionCalculateForm.region" placeholder="本轮日期">
+										<el-option label="区域一" value="shanghai"></el-option>
+										<el-option label="区域二" value="beijing"></el-option>
+									</el-select>
+								</el-form-item>
+								<el-form-item label="总数">
+									<el-input v-model="distributionCalculateForm.quantity" placeholder="总数"></el-input>
+								</el-form-item>
+								<el-form-item>
+									<el-button @click="onSubmit">计算</el-button>
+								</el-form-item>
 							</el-form>
-								<!-- <el-col>
+							<!-- <el-col>
 									计算公式：<el-select size="mini"></el-select>
 								</el-col>
 								本轮日期：<el-select size="mini"></el-select>
@@ -80,9 +90,11 @@
 						<el-col :span="22" :ofset="1">
 							<el-table :data="distributionData">
 								<el-table-column label="成员" prop="memberName" />
-								<el-table-column label="计算后贡献值" prop="itemName" />
-								<el-table-column label="所占比率" prop="quantity" />
-								<el-table-column label="可分得数量" prop="quantity" />
+								<el-table-column label="本轮贡献" prop="itemName" />
+								<el-table-column label="上轮贡献" prop="itemName" />
+								<el-table-column label="计算值" prop="itemName" />
+								<el-table-column label="占比" prop="quantity" />
+								<el-table-column label="获得数量" prop="quantity" />
 							</el-table>
 						</el-col>
 					</el-col>
@@ -98,7 +110,7 @@
 								<el-table-column label="数量" prop="quantity" />
 							</el-table>
 							<el-pagination layout="sizes, prev, pager, next" :total="distributionPageTotal" :page-size="distributionPageSize"
-							:current-page="distributionPageCurrent" @size-change="distributionSizeChange" @current-change="distributionCurrentChange">
+							 :current-page="distributionPageCurrent" @size-change="distributionSizeChange" @current-change="distributionCurrentChange">
 							</el-pagination>
 						</el-col>
 					</el-col>
@@ -123,7 +135,7 @@
 							<el-table-column label="加入日期" prop="joinDate" />
 						</el-table>
 						<el-pagination layout="sizes, prev, pager, next" :total="memberPageTotal" :page-size="memberPageSize"
-						:current-page="memberPageCurrent" @size-change="memberSizeChange" @current-change="memberCurrentChange">
+						 :current-page="memberPageCurrent" @size-change="memberSizeChange" @current-change="memberCurrentChange">
 						</el-pagination>
 					</el-col>
 				</el-col>
@@ -149,7 +161,7 @@
 				itemData: [],
 				itemId: "",
 				distributionCalculateForm: {
-					
+
 				},
 
 				memberData: [],
@@ -201,7 +213,7 @@
 			},
 			getDistributionSum() {
 				this.$axios
-					.get("/pokemon/warehouse-distribution/sum",{
+					.get("/pokemon/warehouse-distribution/sum", {
 						params: {
 							itemId: this.itemId
 						}
@@ -273,7 +285,7 @@
 		position: relative;
 		left: 10px;
 	}
-	
+
 	#distribution-header-template {
 		line-height: 0px;
 		padding: 0;
@@ -297,5 +309,4 @@
 	#distribution-header-template .el-input {
 		padding: 0;
 	}
-	
 </style>
