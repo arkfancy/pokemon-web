@@ -57,7 +57,7 @@
 						<el-col>
 							<h3>分配计算</h3>
 						</el-col>
-						<el-col align="left" style="margin-bottom: 10px;">当前计算公式：10 * √总贡献量 + (本轮贡献量 - 上轮贡献量)
+						<el-col align="left" style="margin-bottom: 10px;">当前计算公式：3 * √总贡献量 + (本轮贡献量 - 上轮贡献量)
 						</el-col>
 						<el-col>
 							<el-form :inline="true" :model="distributionCalculateForm" size="mini" align="left">
@@ -327,7 +327,7 @@
 								var sum = 0;
 								for (let index in tempData) {
 									let calculateContribution = parseInt(tempData[index].currentContribution - tempData[index].previousContribution +
-										10 * Math.sqrt(tempData[index].currentContribution));
+										3 * Math.sqrt(tempData[index].currentContribution));
 									tempData[index].calculateContribution = calculateContribution;
 									sum += calculateContribution;
 								}
