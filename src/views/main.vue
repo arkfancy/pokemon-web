@@ -57,28 +57,35 @@
 						<el-col>
 							<h3>分配计算</h3>
 						</el-col>
+						<el-col align="left" style="margin-bottom: 10px;">当前计算公式：10 * √总贡献量 + (本轮贡献量 - 上轮贡献量)
+						</el-col>
 						<el-col>
 							<el-form :inline="true" :model="distributionCalculateForm" size="mini" align="left">
-								<el-form-item label="计算方式">
+								<!-- <el-form-item label="计算方式">
 									<el-input v-model="distributionCalculateForm.strategy" placeholder="计算方式"></el-input>
-								</el-form-item>
-								<el-form-item label="本轮日期">
-									<el-select v-model="distributionCalculateForm.region" placeholder="本轮日期">
+								</el-form-item> -->
+								<el-form-item label="本轮分配日期">
+									<!-- <el-select v-model="distributionCalculateForm.currentDate" placeholder="本轮日期">
 										<el-option label="区域一" value="shanghai"></el-option>
 										<el-option label="区域二" value="beijing"></el-option>
-									</el-select>
+									</el-select> -->
+									<el-date-picker size="mini" v-model="distributionCalculateForm.currentDate" type="date" placeholder="选择日期"
+									 value-format="yyyy-MM-dd" style="max-width: 150px;" />
 								</el-form-item>
-								<el-form-item label="上轮日期">
-									<el-select v-model="distributionCalculateForm.region" placeholder="本轮日期">
+								<el-form-item label="上轮分配日期">
+									<!-- <el-select v-model="distributionCalculateForm.previousDate" placeholder="上轮日期">
 										<el-option label="区域一" value="shanghai"></el-option>
 										<el-option label="区域二" value="beijing"></el-option>
-									</el-select>
+									</el-select> -->
+									<el-date-picker size="mini" v-model="distributionCalculateForm.previousDate" type="date" placeholder="选择日期"
+									 value-format="yyyy-MM-dd" style="max-width: 150px;" />
 								</el-form-item>
-								<el-form-item label="总数">
-									<el-input v-model="distributionCalculateForm.quantity" placeholder="总数"></el-input>
+								<el-form-item label="待分配数量">
+									<el-input type="number" v-model="distributionCalculateForm.quantity" placeholder="总数" style="max-width: 110px;"
+									 clearable="" />
 								</el-form-item>
 								<el-form-item>
-									<el-button @click="onSubmit">计算</el-button>
+									<el-button @click="distributionCalculate">计算分配</el-button>
 								</el-form-item>
 							</el-form>
 							<!-- <el-col>
@@ -87,14 +94,14 @@
 								本轮日期：<el-select size="mini"></el-select>
 								上轮日期：<el-select size="mini"></el-select> -->
 						</el-col>
-						<el-col :span="22" :ofset="1">
-							<el-table :data="distributionData">
+						<el-col>
+							<el-table :data="distributionCalculateData">
 								<el-table-column label="成员" prop="memberName" />
-								<el-table-column label="本轮贡献" prop="itemName" />
-								<el-table-column label="上轮贡献" prop="itemName" />
-								<el-table-column label="计算值" prop="itemName" />
-								<el-table-column label="占比" prop="quantity" />
-								<el-table-column label="获得数量" prop="quantity" />
+								<el-table-column label="本轮贡献" prop="currentContribution" />
+								<el-table-column label="上轮贡献" prop="previousContribution" />
+								<el-table-column label="计算值" prop="calculateContribution" />
+								<el-table-column label="贡献占比" prop="contributionPercentStr" />
+								<el-table-column label="分配数量" prop="quantity" />
 							</el-table>
 						</el-col>
 					</el-col>
@@ -155,6 +162,7 @@
 
 				distributionData: [],
 				distributionSumData: [],
+				distributionCalculateData: [],
 				distributionPageTotal: 0,
 				distributionPageSize: 10,
 				distributionPageCurrent: 1,
@@ -275,6 +283,69 @@
 			},
 			onlyOnlineChange() {
 				this.getMember();
+			},
+			distributionCalculate() {
+				let currentDate = this.distributionCalculateForm.currentDate;
+				let previousDate = this.distributionCalculateForm.previousDate;
+				let quantity = this.distributionCalculateForm.quantity;
+				if (currentDate == null || previousDate == null || quantity == null || quantity == '') {
+					alert("请完善计算条件。");
+					return;
+				}
+				//查询两轮贡献
+				let tempData = [];
+				this.$axios
+					.get("/pokemon/contribution/list", {
+						params: {
+							recordDate: currentDate
+						}
+					})
+					.then(res => {
+						tempData = res.data.data;
+						for (let index in tempData) {
+							tempData[index].currentContribution = tempData[index].contribution;
+						}
+						this.$axios
+							.get("/pokemon/contribution/list", {
+								params: {
+									recordDate: previousDate
+								}
+							})
+							.then(res => {
+								for (let index in tempData) {
+									let memberId = tempData[index].memberId;
+									for (let idx in res.data.data) {
+										if (memberId == res.data.data[idx].memberId) {
+											tempData[index].previousContribution = res.data.data[idx].contribution;
+										}
+									}
+									if (tempData[index].previousContribution == null) {
+										tempData[index].previousContribution = 0;
+									}
+								}
+								//计算
+								var sum = 0;
+								for (let index in tempData) {
+									let calculateContribution = parseInt(tempData[index].currentContribution - tempData[index].previousContribution +
+										10 * Math.sqrt(tempData[index].currentContribution));
+									tempData[index].calculateContribution = calculateContribution;
+									sum += calculateContribution;
+								}
+								for (let index in tempData) {
+									let contributionPercent = Math.floor(tempData[index].calculateContribution * 10000 / sum) / 10000;
+									tempData[index].contributionPercent = contributionPercent;
+									tempData[index].contributionPercentStr = (100 * contributionPercent).toFixed(2) + '%';
+									tempData[index].quantity = Math.floor(quantity * contributionPercent);
+								}
+								this.distributionCalculateData = tempData;
+							})
+							.catch(function(error) {
+								alert("error: " + error);
+							});
+					})
+					.catch(function(error) {
+						alert("error: " + error);
+					});
 			}
 		}
 	}
