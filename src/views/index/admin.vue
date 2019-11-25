@@ -1,5 +1,5 @@
 <template>
-	<div id="pokemonAdmin">
+	<div id="view-admin">
 		<el-tabs v-model="activeTabs" @tab-click="tabChange">
 			<el-tab-pane label="贡献" name="contribution">
 				<el-container>
@@ -108,7 +108,7 @@
 
 <script>
 	export default {
-		name: 'pokemonAdmin',
+		name: 'view-admin',
 		data() {
 			return {
 				activeTabs: "contribution",

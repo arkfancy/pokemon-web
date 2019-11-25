@@ -15,19 +15,37 @@ const router = new Router({
 		component: () => import("./views/index.vue"),
 		children: [{
 			path: '/index',
-			component: () => import("./views/main.vue")
+			component: () => import("./views/index/main.vue"),
+			children: [{
+				path: '/index',
+				components: {
+					contribution: () => import("./views/index/main/contribution.vue"),
+					distribution: () => import("./views/index/main/distribution.vue"),
+					dungeon: () => import("./views/index/main/dungeon.vue"),
+					member: () => import("./views/index/main/member.vue")
+				}
+			}]
 		}, {
 			path: '/index/admin',
-			component: () => import("./views/admin.vue"),
+			component: () => import("./views/index/admin.vue"),
 			meta: {
 				login: routerLogin
-			}
+			},
+			children: [{
+				path: '/index/admin',
+				components: {
+					contribution: () => import("./views/index/admin/contribution.vue"),
+					distribution: () => import("./views/index/admin/distribution.vue"),
+					dungeon: () => import("./views/index/admin/dungeon.vue"),
+					member: () => import("./views/index/admin/member.vue")
+				}
+			}]
 		}]
 	}]
 })
 
 router.beforeEach((to, from, next) => {
-	
+
 	if (to.meta == null || to.meta.login == null || !to.meta.login) {
 		// 不需要验证登录
 		next();

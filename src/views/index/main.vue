@@ -1,5 +1,5 @@
 <template>
-	<div id="pokemonMain">
+	<div id="view-main">
 		<el-tabs v-model="activeTabs">
 			<el-tab-pane label="贡献" name="contribution">
 				<el-col :xs="24" :sm="10" :md="10" :lg="8">
@@ -17,6 +17,10 @@
 						</el-table>
 					</el-col>
 				</el-col>
+			</el-tab-pane>
+			<el-tab-pane label="副本" name="dungeon">asd
+				<router-view name="dungeon" />
+				dsa
 			</el-tab-pane>
 			<el-tab-pane label="仓库" name="distribution">
 				<el-col :xs="24" :sm="10" :md="10" :lg="8">
@@ -140,6 +144,7 @@
 						</el-table>
 						<el-table :data="memberData" v-show="onlyOnline">
 							<el-table-column label="成员" prop="memberName" />
+							<el-table-column label="级别" prop="rankName" />
 							<el-table-column label="加入日期" prop="joinDate" />
 						</el-table>
 						<el-pagination layout="sizes, prev, pager, next" :total="memberPageTotal" :page-size="memberPageSize"
@@ -154,7 +159,7 @@
 
 <script>
 	export default {
-		name: 'pokemonMain',
+		name: 'view-main',
 		data() {
 			return {
 				activeTabs: "contribution",

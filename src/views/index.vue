@@ -1,5 +1,5 @@
 <template>
-	<div id="pokemonIndex">
+	<div id="view-index">
 		<el-row>
 			<el-col>
 				<h2>Arthur <i class="el-icon-bangzhu" /> 超级精灵球</h2>
@@ -21,7 +21,7 @@
 
 <script>
 	export default {
-		name: 'pokemonIndex',
+		name: 'view-index',
 		data() {
 			return {
 				loginInfo: {}
