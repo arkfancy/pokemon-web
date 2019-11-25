@@ -134,6 +134,7 @@
 					<el-col :span="22" :ofset="1">
 						<el-table :data="memberData" v-show="!onlyOnline">
 							<el-table-column label="成员" prop="memberName" />
+							<el-table-column label="级别" prop="rankName" />
 							<el-table-column label="加入日期" prop="joinDate" />
 							<el-table-column label="离开日期" prop="leaveDate" />
 						</el-table>
