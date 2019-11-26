@@ -4,7 +4,7 @@ import Axios from 'axios'
 
 Vue.use(Router)
 
-let routerLogin = true;
+let needLogin = false;
 
 const router = new Router({
 	routes: [{
@@ -15,37 +15,18 @@ const router = new Router({
 		component: () => import("./views/index.vue"),
 		children: [{
 			path: '/index',
-			component: () => import("./views/index/main.vue"),
-			children: [{
-				path: '/index',
-				components: {
-					contribution: () => import("./views/index/main/contribution.vue"),
-					distribution: () => import("./views/index/main/distribution.vue"),
-					dungeon: () => import("./views/index/main/dungeon.vue"),
-					member: () => import("./views/index/main/member.vue")
-				}
-			}]
+			component: () => import("./views/index/main.vue")
 		}, {
 			path: '/index/admin',
-			component: () => import("./views/index/admin.vue"),
 			meta: {
-				login: routerLogin
+				login: needLogin
 			},
-			children: [{
-				path: '/index/admin',
-				components: {
-					contribution: () => import("./views/index/admin/contribution.vue"),
-					distribution: () => import("./views/index/admin/distribution.vue"),
-					dungeon: () => import("./views/index/admin/dungeon.vue"),
-					member: () => import("./views/index/admin/member.vue")
-				}
-			}]
+			component: () => import("./views/index/admin.vue"),
 		}]
 	}]
 })
 
 router.beforeEach((to, from, next) => {
-
 	if (to.meta == null || to.meta.login == null || !to.meta.login) {
 		// 不需要验证登录
 		next();
@@ -72,7 +53,6 @@ router.beforeEach((to, from, next) => {
 			next();
 		}
 	}).catch(function(error) {
-
 		if (401 === error.response.status) {
 			let loginUrl = error.response.data;
 			window.location = loginUrl;

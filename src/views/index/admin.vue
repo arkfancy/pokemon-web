@@ -2,16 +2,16 @@
 	<div id="view-admin">
 		<el-tabs v-model="activeTabs">
 			<el-tab-pane label="贡献" name="contribution">
-				<router-view name="contribution" @submit="confirmSubmit" />
+				<contribution />
 			</el-tab-pane>
 			<el-tab-pane label="副本" name="dungeon">
-				<router-view name="dungeon"  @submit="confirmSubmit" />
+				<dungeon />
 			</el-tab-pane>
 			<el-tab-pane label="仓库" name="distribution">
-				<router-view name="distribution"  @submit="confirmSubmit"/>
+				<distribution />
 			</el-tab-pane>
 			<el-tab-pane label="成员" name="member">
-				<router-view name="member"  @submit="confirmSubmit"/>
+				<member />
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -25,25 +25,30 @@
 				activeTabs: "contribution",
 			}
 		},
+		components: {
+			contribution: () => import("./admin/contribution.vue"),
+			distribution: () => import("./admin/distribution.vue"),
+			dungeon: () => import("./admin/dungeon.vue"),
+			member: () => import("./admin/member.vue")
+		},
 		methods: {
-			confirmSubmit(submit) {
-				this.$confirm("确定提交？", "提示", {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(res => {
-					if (res) {
-						submit()
-					}
-				}).catch(res => {
-					alert(res)
-				});
-			},
+			// confirmSubmit(submit) {
+			// 	this.$confirm("确定提交？", "提示", {
+			// 		confirmButtonText: '确定',
+			// 		cancelButtonText: '取消',
+			// 		type: 'warning'
+			// 	}).then(res => {
+			// 		if (res) {
+			// 			submit()
+			// 		}
+			// 	}).catch(res => {
+			// 		alert(res)
+			// 	});
+			// },
 
 
 		},
-		mounted() {
-		}
+		mounted() {}
 	}
 </script>
 
