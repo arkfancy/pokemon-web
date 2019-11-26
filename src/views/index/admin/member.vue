@@ -1,6 +1,6 @@
 <template>
 	<div id="view-admin-member">
-		asdasdasdasd
+		
 	</div>
 </template>
 
