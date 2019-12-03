@@ -60,7 +60,7 @@
 				}
 			},
 			submitContribution() {
-				if (this.contributionDate == null) {
+				if (this.contributionDate == null || this.contributionDate == "") {
 					alert("请选择记录日期。");
 					return;
 				}

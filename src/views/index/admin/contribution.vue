@@ -17,7 +17,7 @@
 			</el-aside>
 			<el-main>
 				<el-row v-show="contributionMenuActive=='add'">
-					<add/>
+					<add />
 				</el-row>
 			</el-main>
 		</el-container>
