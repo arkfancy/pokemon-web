@@ -5,8 +5,8 @@ module.exports = {
 	lintOnSave: false,
 	devServer: {
 		proxy: {
-			'/pokemon': { //使用"/api"来代替"http://f.apiplus.c" 
-				target: 'http://www.arkfancy.com/api', //源地址 
+			'/api': {
+				target: 'http://www.arkfancy.com', //源地址 
 				changeOrigin: true, //改变源 
 			}
 		}

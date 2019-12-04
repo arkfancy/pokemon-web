@@ -58,7 +58,7 @@
 		methods: {
 			getMember() {
 				this.$axios
-					.get("/pokemon/member/list")
+					.get("/api/pokemon/member/list")
 					.then(res => {
 						this.memberData = res.data.data;
 					})
@@ -85,7 +85,7 @@
 					return;
 				}
 				this.confirmSubmit(() => {
-					this.$axios.post("/pokemon/dungeon/list", this.dungeonTableData).then(
+					this.$axios.post("/api/pokemon/dungeon/list", this.dungeonTableData).then(
 						res => {
 							if (res.data.data && res.data.data[0].id != null) {
 								alert("记录成功，请返回看板查看。");

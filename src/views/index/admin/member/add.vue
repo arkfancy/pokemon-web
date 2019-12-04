@@ -52,7 +52,7 @@
 			},
 			getRank() {
 				this.$axios
-					.get("/pokemon/rank/list")
+					.get("/api/pokemon/rank/list")
 					.then(res => {
 						this.rankData = res.data.data;
 					})
@@ -62,7 +62,7 @@
 			},
 			submitMember() {
 				this.confirmSubmit(() => {
-					this.$axios.post("/pokemon/member", this.member).then(
+					this.$axios.post("/api/pokemon/member", this.member).then(
 						res => {
 							if (res.data.data && res.data.data.id != null) {
 								alert("记录成功，请返回看板查看。");

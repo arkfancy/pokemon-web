@@ -4,7 +4,7 @@ import Axios from 'axios'
 
 Vue.use(Router)
 
-let needLogin = false;
+let needLogin = true;
 
 const router = new Router({
 	routes: [{
@@ -40,9 +40,8 @@ router.beforeEach((to, from, next) => {
 	}
 
 	// 校验登录
-	let url = "http://www.arkfancy.com/api/sso/info";
 	let returnUrl = window.location.origin + window.location.pathname + "#" + to.fullPath;
-	Axios.get(url, {
+	Axios.get("/api/sso/info", {
 		params: {
 			returnUrl: returnUrl
 		}

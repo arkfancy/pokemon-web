@@ -40,7 +40,7 @@
 		methods: {
 			getContribution() {
 				this.$axios
-					.get("/pokemon/contribution/list")
+					.get("/api/pokemon/contribution/list")
 					.then(res => {
 						this.contributionData = res.data.data;
 					})

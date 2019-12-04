@@ -42,7 +42,7 @@
 		methods: {
 			getContribution() {
 				this.$axios
-					.get("/pokemon/contribution/list")
+					.get("/api/pokemon/contribution/list")
 					.then(res => {
 						this.contributionTableData = res.data.data;
 						this.contributionPreRecordDate = res.data.data[0].recordDate
@@ -65,7 +65,7 @@
 					return;
 				}
 				this.confirmSubmit(() => {
-					this.$axios.post("/pokemon/contribution/list", this.contributionTableData).then(
+					this.$axios.post("/api/pokemon/contribution/list", this.contributionTableData).then(
 						res => {
 							if (res.data.data && res.data.data[0].id != null) {
 								alert("记录成功，请返回看板查看。");

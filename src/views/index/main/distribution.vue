@@ -38,7 +38,7 @@
 				<el-col>
 					<h3>分配计算</h3>
 				</el-col>
-				<el-col align="left" style="margin-bottom: 10px;">当前计算公式：3 * √总贡献量 + (本轮贡献量 - 上轮贡献量)
+				<el-col align="left" style="margin-bottom: 10px;">当前计算公式：本轮贡献差/2 + 副本贡献量 * 75 + 会战加成 + 活跃加成
 				</el-col>
 				<el-col>
 					<el-form :inline="true" :model="distributionCalculateForm" size="mini" align="left">
@@ -62,8 +62,10 @@
 				<el-col>
 					<el-table :data="distributionCalculateData">
 						<el-table-column label="成员" prop="memberName" />
-						<el-table-column label="本轮贡献" prop="currentContribution" />
-						<el-table-column label="上轮贡献" prop="previousContribution" />
+						<el-table-column label="本轮贡献差" prop="contribution" />
+						<el-table-column label="副本贡献" prop="dungeonContribution" />
+						<el-table-column label="会战加成" prop="battleBonus" />
+						<el-table-column label="活跃加成" prop="activityBonus" />
 						<el-table-column label="计算值" prop="calculateContribution" />
 						<el-table-column label="贡献占比" prop="contributionPercentStr" />
 						<el-table-column label="分配数量" prop="quantity" />
@@ -114,7 +116,7 @@
 		methods: {
 			getDistribution() {
 				this.$axios
-					.get("/pokemon/warehouse-distribution/page/" + this.distributionPageCurrent + "-" + this.distributionPageSize)
+					.get("/api/pokemon/warehouse-distribution/page/" + this.distributionPageCurrent + "-" + this.distributionPageSize)
 					.then(res => {
 						this.distributionData = res.data.data.records;
 						this.distributionPageTotal = res.data.data.total;
@@ -127,7 +129,7 @@
 			},
 			getDistributionSum() {
 				this.$axios
-					.get("/pokemon/warehouse-distribution/sum", {
+					.get("/api/pokemon/warehouse-distribution/sum", {
 						params: {
 							itemId: this.itemId
 						}
@@ -141,7 +143,7 @@
 			},
 			getItem() {
 				this.$axios
-					.get("/pokemon/item/list")
+					.get("/api/pokemon/item/list")
 					.then(res => {
 						this.itemData = res.data.data;
 					})
@@ -172,7 +174,7 @@
 				//查询两轮贡献
 				let tempData = [];
 				this.$axios
-					.get("/pokemon/contribution/list", {
+					.get("/api/pokemon/contribution/list", {
 						params: {
 							recordDate: currentDate
 						}
@@ -183,7 +185,7 @@
 							tempData[index].currentContribution = tempData[index].contribution;
 						}
 						this.$axios
-							.get("/pokemon/contribution/list", {
+							.get("/api/pokemon/contribution/list", {
 								params: {
 									recordDate: previousDate
 								}
@@ -199,22 +201,76 @@
 									if (tempData[index].previousContribution == null) {
 										tempData[index].previousContribution = 0;
 									}
+									tempData[index].contribution = tempData[index].currentContribution - tempData[index].previousContribution;
 								}
-								//计算
-								var sum = 0;
-								for (let index in tempData) {
-									let calculateContribution = parseInt(tempData[index].currentContribution - tempData[index].previousContribution +
-										3 * Math.sqrt(tempData[index].currentContribution));
-									tempData[index].calculateContribution = calculateContribution;
-									sum += calculateContribution;
-								}
-								for (let index in tempData) {
-									let contributionPercent = Math.floor(tempData[index].calculateContribution * 10000 / sum) / 10000;
-									tempData[index].contributionPercent = contributionPercent;
-									tempData[index].contributionPercentStr = (100 * contributionPercent).toFixed(2) + '%';
-									tempData[index].quantity = Math.floor(quantity * contributionPercent);
-								}
-								this.distributionCalculateData = tempData;
+								//查询两轮间副本贡献量
+								this.$axios.get("/api/pokemon/dungeon/sum", {
+									params: {
+										previousDate: previousDate,
+										currentDate: currentDate
+									}
+								}).then(res => {
+									for (let index in tempData) {
+										let memberId = tempData[index].memberId;
+										for (let idx in res.data.data) {
+											if (memberId == res.data.data[idx].memberId) {
+												tempData[index].dungeonContribution = res.data.data[idx].dungeonContribution;
+											}
+										}
+										if (tempData[index].dungeonContribution == null) {
+											tempData[index].dungeonContribution = 0;
+										}
+										//会战系数TODO
+										if (memberId == 2049362 || memberId == 676975426 || memberId == 1495447231) {
+											tempData[index].battleBonus = 50000;
+										} else {
+											tempData[index].battleBonus = 0;
+										}
+									}
+									//活跃加成
+									this.$axios
+										.get("/api/pokemon/member/list")
+										.then(res => {
+											for (let index in tempData) {
+												let memberId = tempData[index].memberId;
+												for (let idx in res.data.data) {
+													if (memberId == res.data.data[idx].memberId) {
+														if (res.data.data[idx].rankId == 1) {
+															tempData[index].activityBonus = 50000;
+														} else if (res.data.data[idx].rankId == 2) {
+															tempData[index].activityBonus = 40000;
+														} else if (res.data.data[idx].rankId == 3) {
+															tempData[index].activityBonus = 30000;
+														}
+													}
+												}
+												if (tempData[index].activityBonus == null) {
+													tempData[index].activityBonus = 0;
+												}
+											}
+
+											//计算
+											var sum = 0;
+											for (let index in tempData) {
+												let calculateContribution = parseInt((tempData[index].currentContribution - tempData[index].previousContribution) /
+													2 +
+													tempData[index].dungeonContribution * 75 +
+													tempData[index].battleBonus +
+													tempData[index].activityBonus);
+												tempData[index].calculateContribution = calculateContribution;
+												sum += calculateContribution;
+											}
+											for (let index in tempData) {
+												let contributionPercent = Math.floor(tempData[index].calculateContribution * 10000 / sum) / 10000;
+												tempData[index].contributionPercent = contributionPercent;
+												tempData[index].contributionPercentStr = (100 * contributionPercent).toFixed(2) + '%';
+												tempData[index].quantity = Math.floor(quantity * contributionPercent);
+											}
+											this.distributionCalculateData = tempData;
+										});
+								}).catch(function(error) {
+									alert("error: " + error);
+								});
 							})
 							.catch(function(error) {
 								alert("error: " + error);

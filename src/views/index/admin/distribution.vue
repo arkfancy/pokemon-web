@@ -88,7 +88,7 @@
 			getDistribution() {
 				//分配也是按贡献排名分的
 				this.$axios
-					.get("/pokemon/contribution/list")
+					.get("/api/pokemon/contribution/list")
 					.then(res => {
 						this.distributionTableData = res.data.data;
 					})
@@ -98,7 +98,7 @@
 			},
 			getItem() {
 				this.$axios
-					.get("/pokemon/item/list")
+					.get("/api/pokemon/item/list")
 					.then(res => {
 						this.itemData = res.data.data;
 					})
@@ -117,8 +117,8 @@
 				}
 			},
 			submitDistribution() {
-				this.$emit('submit', () => {
-					this.$axios.post("/pokemon/warehouse-distribution/list", this.distributionTableData).then(
+				this.confirmSubmit(() => {
+					this.$axios.post("/api/pokemon/warehouse-distribution/list", this.distributionTableData).then(
 						res => {
 							if (res.data.data && res.data.data[0].id != null) {
 								alert("记录成功，请返回看板查看。");

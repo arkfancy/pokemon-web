@@ -43,7 +43,7 @@
 		},
 		methods: {
 			getMember() {
-				this.$axios.get("/pokemon/member/list").then(res => {
+				this.$axios.get("/api/pokemon/member/list").then(res => {
 					if (res.data.data) {
 						this.memberData = res.data.data
 					}
@@ -53,7 +53,7 @@
 			},
 			getRank() {
 				this.$axios
-					.get("/pokemon/rank/list")
+					.get("/api/pokemon/rank/list")
 					.then(res => {
 						this.rankData = res.data.data;
 					})
@@ -62,7 +62,7 @@
 					});
 			},
 			memberIdChange(val) {
-				this.$axios.get("/pokemon/member/" + val).then(res => {
+				this.$axios.get("/api/pokemon/member/" + val).then(res => {
 					this.member = res.data.data;
 				}).catch(function(error) {
 					alert("error: " + error);
@@ -74,7 +74,7 @@
 					return;
 				}
 				this.confirmSubmit(() => {
-					this.$axios.put("/pokemon/member/rank/" + this.member.memberId + "/" + this.member.rankId).then(res => {
+					this.$axios.put("/api/pokemon/member/rank/" + this.member.memberId + "/" + this.member.rankId).then(res => {
 						if (res.data.data) {
 							alert("成员级别已修改。")
 						} else {

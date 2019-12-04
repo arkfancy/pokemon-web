@@ -46,7 +46,7 @@
 		methods: {
 			getMember() {
 				this.$axios
-					.get("/pokemon/member/page/" + this.memberPageCurrent + "-" + this.memberPageSize, {
+					.get("/api/pokemon/member/page/" + this.memberPageCurrent + "-" + this.memberPageSize, {
 						params: {
 							containLeave: !this.onlyOnline
 						}

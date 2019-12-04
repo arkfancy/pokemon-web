@@ -37,7 +37,7 @@
 		},
 		methods: {
 			getMember() {
-				this.$axios.get("/pokemon/member/list").then(res => {
+				this.$axios.get("/api/pokemon/member/list").then(res => {
 					if (res.data.data) {
 						this.memberData = res.data.data
 					}
@@ -51,7 +51,7 @@
 					return;
 				}
 				this.confirmSubmit(() => {
-					this.$axios.put("/pokemon/member/leave/" + this.memberId + "/" + this.leaveDate).then(res => {
+					this.$axios.put("/api/pokemon/member/leave/" + this.memberId + "/" + this.leaveDate).then(res => {
 						if (res.data.data) {
 							alert("成员已离开。")
 						} else {
