@@ -4,7 +4,7 @@ import Axios from 'axios'
 
 Vue.use(Router)
 
-let routerLogin = true;
+let needLogin = true;
 
 const router = new Router({
 	routes: [{
@@ -15,19 +15,18 @@ const router = new Router({
 		component: () => import("./views/index.vue"),
 		children: [{
 			path: '/index',
-			component: () => import("./views/main.vue")
+			component: () => import("./views/index/main.vue")
 		}, {
 			path: '/index/admin',
-			component: () => import("./views/admin.vue"),
 			meta: {
-				login: routerLogin
-			}
+				login: needLogin
+			},
+			component: () => import("./views/index/admin.vue"),
 		}]
 	}]
 })
 
 router.beforeEach((to, from, next) => {
-	
 	if (to.meta == null || to.meta.login == null || !to.meta.login) {
 		// 不需要验证登录
 		next();
@@ -41,9 +40,8 @@ router.beforeEach((to, from, next) => {
 	}
 
 	// 校验登录
-	let url = "http://www.arkfancy.com/api/sso/info";
 	let returnUrl = window.location.origin + window.location.pathname + "#" + to.fullPath;
-	Axios.get(url, {
+	Axios.get("/api/sso/info", {
 		params: {
 			returnUrl: returnUrl
 		}
@@ -54,7 +52,6 @@ router.beforeEach((to, from, next) => {
 			next();
 		}
 	}).catch(function(error) {
-
 		if (401 === error.response.status) {
 			let loginUrl = error.response.data;
 			window.location = loginUrl;
