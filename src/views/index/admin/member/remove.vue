@@ -28,7 +28,7 @@
 		data() {
 			return {
 				memberId: null,
-				leaveDate: new Date(),
+				leaveDate: '',
 				memberData: []
 			}
 		},

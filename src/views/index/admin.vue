@@ -7,6 +7,9 @@
 			<el-tab-pane label="副本" name="dungeon">
 				<dungeon />
 			</el-tab-pane>
+			<el-tab-pane label="公会战" name="guildWar">
+				<guild-war />
+			</el-tab-pane>
 			<el-tab-pane label="仓库" name="distribution">
 				<distribution />
 			</el-tab-pane>
@@ -29,6 +32,7 @@
 			contribution: () => import("./admin/contribution.vue"),
 			distribution: () => import("./admin/distribution.vue"),
 			dungeon: () => import("./admin/dungeon.vue"),
+			guildWar: () => import('./admin/guildWar.vue'),
 			member: () => import("./admin/member.vue")
 		},
 		methods: {

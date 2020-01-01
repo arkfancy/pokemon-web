@@ -1,6 +1,6 @@
 <template>
-	<div id="view-main-dungeon">
-		副本
+	<div id="view-main-guild-war">
+		公会战
 	</div>
 </template>
 
