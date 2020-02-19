@@ -38,7 +38,7 @@
 				<el-col>
 					<h3>分配计算</h3>
 				</el-col>
-				<el-col align="left" style="margin-bottom: 10px;">当前计算公式：本轮贡献差/2 + 副本贡献量 * 75 + 会战加成 + 活跃加成
+				<el-col align="left" style="margin-bottom: 10px;">当前计算公式：本轮贡献差/2 + 副本贡献量 * 100 + 会战加成 + 活跃加成
 				</el-col>
 				<el-col>
 					<el-form :inline="true" :model="distributionCalculateForm" size="mini" align="left">
@@ -212,6 +212,7 @@
 								}).then(res => {
 									for (let index in tempData) {
 										let memberId = tempData[index].memberId;
+										let memberName = tempData[index].memberName;
 										for (let idx in res.data.data) {
 											if (memberId == res.data.data[idx].memberId) {
 												tempData[index].dungeonContribution = res.data.data[idx].dungeonContribution;
@@ -221,10 +222,52 @@
 											tempData[index].dungeonContribution = 0;
 										}
 										//会战系数TODO
-										if (memberId == 2049362 || memberId == 676975426 || memberId == 1495447231) {
-											tempData[index].battleBonus = 50000;
-										} else {
-											tempData[index].battleBonus = 0;
+										switch (memberName) {
+											case "闲暇人士":
+												tempData[index].battleBonus =  30000 * 3 + 10000 * 1;
+												break;
+											case "ArkL":
+												tempData[index].battleBonus = 30000 * 4 + 10000 * 4;
+												break;
+											case "半梦半醒":
+												tempData[index].battleBonus = 30000 * 1 + 10000 * 4;
+												break;
+											case "卡西里摩根":
+												tempData[index].battleBonus = 30000 * 2 + 10000 * 4;
+												break;
+											case "跳跳":
+												tempData[index].battleBonus = 30000 * 1 + 10000 * 1;
+												break;
+											case "幽默词籁瑞":
+												tempData[index].battleBonus = 30000 * 0 + 10000 * 2;
+												break;
+											case "塞尔达":
+												tempData[index].battleBonus = 30000 * 0 + 10000 * 1;
+												break;
+											case "拜伦无情":
+												tempData[index].battleBonus = 30000 * 1 + 10000 * 4;
+												break;
+											case "釢茶":
+												tempData[index].battleBonus = 30000 * 0 + 10000 * 2;
+												break;
+											case "心心メ大魔王":
+												tempData[index].battleBonus = 30000 * 0 + 10000 * 2;
+												break;
+											case "苏念":
+												tempData[index].battleBonus = 30000 * 0 + 10000 * 3;
+												break;
+											case "天问":
+												tempData[index].battleBonus = 30000 * 0 + 10000 * 4;
+												break;
+											case "兔七哥":
+												tempData[index].battleBonus = 30000 * 3 + 10000 * 2;
+												break;
+											case "冰雪兔":
+												tempData[index].battleBonus = 30000 * 0 + 10000 * 4;
+												break;
+											default:
+												tempData[index].battleBonus = 0;
+												break;
 										}
 									}
 									//活跃加成
@@ -241,6 +284,8 @@
 															tempData[index].activityBonus = 40000;
 														} else if (res.data.data[idx].rankId == 3) {
 															tempData[index].activityBonus = 30000;
+														} else{
+															tempData[index].activityBonus = 10000;
 														}
 													}
 												}
@@ -254,7 +299,7 @@
 											for (let index in tempData) {
 												let calculateContribution = parseInt((tempData[index].currentContribution - tempData[index].previousContribution) /
 													2 +
-													tempData[index].dungeonContribution * 75 +
+													tempData[index].dungeonContribution * 100 +
 													tempData[index].battleBonus +
 													tempData[index].activityBonus);
 												tempData[index].calculateContribution = calculateContribution;
